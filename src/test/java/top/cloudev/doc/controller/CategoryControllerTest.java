@@ -152,18 +152,18 @@ public class CategoryControllerTest {
 
         /**---------------------测试用例赋值开始---------------------**/
         //TODO 将下面的null值换为测试参数
-        Pageable pageable=new PageRequest(0,10, Sort.Direction.DESC,"categoryId");
+        Pageable pageable=new PageRequest(0,10, Sort.Direction.ASC,"sequence");
         // 期望获得的结果数量(默认有两个测试用例，所以值应为"2L"，如果新增了更多测试用例，请相应设定这个值)
-        expectResultCount = null;
+        expectResultCount = 4L;
         /**---------------------测试用例赋值结束---------------------**/
 
         // 直接通过dao层接口方法获得期望的数据
-        Page<Category> pagedata = categoryRepository.findByProjectIdAndIsDeletedFalse(dto.getProjectId(), pageable);
+        Page<Category> pagedata = categoryRepository.findByProjectIdAndIsDeletedFalse(c1.getProjectId(), pageable);
         expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
 
         MvcResult mvcResult = mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get("/category/list")
+                        MockMvcRequestBuilders.get("/category/list?projectId=1")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 // 打印结果
@@ -173,7 +173,7 @@ public class CategoryControllerTest {
                 // 检查返回的数据节点
                 .andExpect(jsonPath("$.pagedata.totalElements").value(expectResultCount))
                 .andExpect(jsonPath("$.dto.keyword").isEmpty())
-                .andExpect(jsonPath("$.dto.name").isEmpty())
+                .andExpect(jsonPath("$.dto.projectId").value(1))
                 .andReturn();
 
         // 提取返回结果中的列表数据及翻页信息
@@ -205,7 +205,7 @@ public class CategoryControllerTest {
         String keyword = dto.getKeyword().trim();
 
         // 直接通过dao层接口方法获得期望的数据
-        pagedata = categoryRepository.findByNameContainingAllIgnoringCaseAndProjectIdAndIsDeletedFalse(keyword, dto.getProjectId(), pageable);
+        pagedata = categoryRepository.findByNameContainingAllIgnoringCaseAndProjectIdAndIsDeletedFalse(keyword, c1.getProjectId(), pageable);
         expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
 
         mvcResult = mockMvc
