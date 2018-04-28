@@ -683,6 +683,28 @@ public class CategoryControllerTest {
                 .andReturn();
 
 
+        // 用例13:sequence采用非法等价类：空值；
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("用例13文档分类");
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence","")//int型数据空值参数直接在mock请求中传参
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"formErrors"
+                .andExpect(content().string(containsString("formErrors")))
+                // 检查返回的数据节点
+                .andExpect(content().string(containsString("\"code\" : \"NotNull\"")))
+                .andReturn();
+
 
 
 
