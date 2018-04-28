@@ -194,12 +194,13 @@ public class CategoryControllerTest {
         /**---------------------测试用例赋值开始---------------------**/
         //TODO 将下面的null值换为测试参数
         dto = new CategoryDTO();
-        dto.setKeyword(null);
+        dto.setKeyword("文档分类");
+        dto.setProjectId(c1.getProjectId());
 
-        pageable=new PageRequest(0,10, Sort.Direction.DESC,"categoryId");
+        pageable=new PageRequest(0,10, Sort.Direction.ASC,"sequence");
 
         // 期望获得的结果数量
-        expectResultCount = null;
+        expectResultCount = 3L;
         /**---------------------测试用例赋值结束---------------------**/
 
         String keyword = dto.getKeyword().trim();
@@ -210,7 +211,7 @@ public class CategoryControllerTest {
 
         mvcResult = mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get("/category/list")
+                        MockMvcRequestBuilders.get("/category/list?projectId=1")
                                 .param("keyword",dto.getKeyword())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -221,7 +222,7 @@ public class CategoryControllerTest {
                 // 检查返回的数据节点
                 .andExpect(jsonPath("$.pagedata.totalElements").value(expectResultCount))
                 .andExpect(jsonPath("$.dto.keyword").value(dto.getKeyword()))
-                .andExpect(jsonPath("$.dto.name").isEmpty())
+                .andExpect(jsonPath("$.dto.projectId").value(1))
                 .andReturn();
 
         // 提取返回结果中的列表数据及翻页信息
