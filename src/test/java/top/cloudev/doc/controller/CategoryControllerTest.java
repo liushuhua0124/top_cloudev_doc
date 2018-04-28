@@ -250,6 +250,51 @@ public class CategoryControllerTest {
          * 测试新增文档分类
          */
 
+        /**
+         *  列出新增文档分类测试用例清单
+         *
+         *
+         *   用例1:全部参数使用合法中间值
+         *   ProjectId=1L；
+         *   name="测试新增文档分类一";
+         *   sequence="10";
+         *   operator="1L";
+         *
+         *   用例2:name采用合法边界值Min：name="测";
+         *   (其它参数沿用用例1的合法中间值)
+         *
+         *   用例3:name采用合法边界值Min+:name="测试";
+         *
+         *   用例4:name采用合法边界值Max:name="测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试";
+         *
+         *   用例5:name采用合法边界值Max:name="测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测";
+         *
+         *   用例6:name采用非法等价类：空值；
+         *
+         *   用例7:name采用非法边界值Max+:name="测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测超长";
+         *
+         *   用例8:name同项目下唯一性逻辑校验：name=“文档分类一”(采用SetUp()中相同的值)；
+         *
+         *   用例9:sequence采用合法边界值Min：sequence=1；
+         *
+         *   用例10:sequence采用合法边界值Min+：sequence=2；
+         *
+         *   用例11:sequence采用合法边界值Max：sequence=Integer.MAX_VALUE；
+         *
+         *   用例12:sequence采用合法边界值Max-：sequence=Integer.MAX_VALUE-1；
+         *
+         *   用例13:sequence采用非法等价类：空值；
+         *
+         *   用例14:sequence采用非法边界值Min-：sequence=0；
+         *
+         *   用例15:sequence采用非法边界值：sequence=-1；
+         *
+         *   用例16:sequence采用非法边界值Max+：sequence=Integer.MAX_VALUE+1；
+         *
+         *   用例17:sequence采用非法等价类：abc(字符)；
+         *
+         */
+
          //TODO 列出新增文档分类测试用例清单
 
         /**---------------------测试用例赋值开始---------------------**/
