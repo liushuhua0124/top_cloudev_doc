@@ -124,7 +124,7 @@ public class CategoryControllerTest {
         /**---------------------测试用例赋值结束---------------------**/
 
         // 直接通过dao层接口方法获得期望的数据
-        Page<Category> pagedata = categoryRepository.findByIsDeletedFalse(pageable);
+        Page<Category> pagedata = categoryRepository.findByProjectIdAndIsDeletedFalse(dto.getProjectId(), pageable);
         expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
 
         MvcResult mvcResult = mockMvc
@@ -171,7 +171,7 @@ public class CategoryControllerTest {
         String keyword = dto.getKeyword().trim();
 
         // 直接通过dao层接口方法获得期望的数据
-        pagedata = categoryRepository.findByNameContainingAndIsDeletedFalseAllIgnoringCase(keyword, pageable);
+        pagedata = categoryRepository.findByNameContainingAllIgnoringCaseAndProjectIdAndIsDeletedFalse(keyword, dto.getProjectId(), pageable);
         expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
 
         mvcResult = mockMvc
