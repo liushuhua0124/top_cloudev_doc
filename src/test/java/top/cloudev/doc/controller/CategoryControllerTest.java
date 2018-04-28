@@ -295,19 +295,20 @@ public class CategoryControllerTest {
          *
          */
 
-         //TODO 列出新增文档分类测试用例清单
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
+        /**--------------------全部参数使用合法中间值----------------**/
         Category category = new Category();
-        category.setProjectId(null);
-        category.setName(null);
-        category.setSequence(null);
+        category.setProjectId(1L);
+        category.setName("用例1文档分类");
+        category.setSequence(10);
 
-        Long operator = null;
-        Long id = 4L;
+        Long operator = 1L;
+        Long id = 8L;
         /**---------------------测试用例赋值结束---------------------**/
 
+        /**-----------------每一个测试用例代码都是由测试用例赋值+模拟请求+测试断言组成**/
+        /**---------------------模拟请求-----------------------------**/
         this.mockMvc.perform(
                         MockMvcRequestBuilders.post("/category/create")
                                 .param("projectId",category.getProjectId().toString())
@@ -315,6 +316,7 @@ public class CategoryControllerTest {
                                 .param("sequence",category.getSequence().toString())
                                 .param("operator",operator.toString())
                 )
+                /**-------------------测试断言---------------------**/
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -336,11 +338,219 @@ public class CategoryControllerTest {
                 .andReturn();
 
 
+
+        // 用例2:name采用合法边界值Min：name="测";
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("测");
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
+
+
+        // 用例3:name采用合法边界值Min+:name="测试";
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("测试");
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
+
+        // 用例4:name采用合法边界值Max:name="测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试";
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试");
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
+
+        // 用例5:name采用合法边界值Max:name="测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测";
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测");
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
+
+        // 用例6:name采用非法等价类：空值；
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("");
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"formErrors"
+                .andExpect(content().string(containsString("formErrors")))
+                // 检查返回的数据节点
+                .andExpect(content().string(containsString("\"code\" : \"NotBlank\"")))
+                .andReturn();
+
+
+        // 用例7:name采用非法边界值Max+:name="测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测超长";
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测试新增文档分类测超长");
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"formErrors"
+                .andExpect(content().string(containsString("formErrors")))
+                // 检查返回的数据节点
+                .andExpect(content().string(containsString("\"code\" : \"Length\"")))
+                .andReturn();
+
+
+        // 用例8:name同项目下唯一性逻辑校验：name=“文档分类一”(采用SetUp()中相同的值)；
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("文档分类一");
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"errorMessage"
+                .andExpect(content().string(containsString("\"errorMessage\" : \"[10001]")))
+                .andReturn();
+
+
+
+
+
+
         /**
          * 测试修改文档分类
          */
 
-         //TODO 列出修改文档分类测试用例清单
 
         /**---------------------测试用例赋值开始---------------------**/
         //TODO 将下面的null值换为测试参数

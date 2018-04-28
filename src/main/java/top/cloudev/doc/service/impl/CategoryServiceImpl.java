@@ -1,5 +1,7 @@
 package top.cloudev.doc.service.impl;
 
+import top.cloudev.doc.common.BusinessException;
+import top.cloudev.doc.common.ErrorCode;
 import top.cloudev.doc.dao.CategoryRepository;
 import top.cloudev.doc.domain.Category;
 import top.cloudev.doc.dto.CategoryDTO;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 领域类 Category(文档分类) 的服务实现层
@@ -39,6 +42,11 @@ public class CategoryServiceImpl implements CategoryService {
     public Category save(Category category, HttpServletRequest request) throws Exception {
 
         if(category.getCategoryId()==null){
+            //判断同一项目里是否有同名的文档分类
+            List<Category> list  = categoryRepository.findByProjectIdAndNameAndIsDeletedFalse(category.getProjectId(), category.getName());
+            if (list.size() > 0) {
+                throw new BusinessException(ErrorCode.Category_Name_Exists);
+            }
             category.setCreatorUserId(Long.valueOf(request.getParameter("operator")));
             return categoryRepository.save(category);
         }else{
