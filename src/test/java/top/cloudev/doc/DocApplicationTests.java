@@ -11,8 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class DocApplicationTests {
 
-    //TODO 执行测试时建议注释掉启动项目的@EnableCaching注解，防止因缓存而导致的问题。
-
     @Test
     public void contextLoads() {
 

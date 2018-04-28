@@ -18,29 +18,29 @@ public class CategoryDTO implements Serializable {
     private String keyword;
 
     /**
-     * 分类名称
+     * 文档分类所属的项目
      */
-    private String name;
+    private Long projectId;
 
     /**
-     *空构造函数
-     *
+     * 空构造函数
      */
-    public CategoryDTO(){
+    public CategoryDTO() {
     }
 
     /**
-     *带参构造函数
+     * 带参的构造函数
      *
+     * @param keyword
+     * @param projectId
      */
-    public CategoryDTO(String keyword, String name){
+    public CategoryDTO(String keyword, Long projectId) {
         this.keyword = keyword;
-        this.name = name;
+        this.projectId = projectId;
     }
 
     /**
-     *Getter,Setter
-     *
+     * Getter,Setter
      */
     public String getKeyword() {
         return keyword;
@@ -50,12 +50,11 @@ public class CategoryDTO implements Serializable {
         this.keyword = keyword;
     }
 
-    public String getName() {
-        return name;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
-
 }
