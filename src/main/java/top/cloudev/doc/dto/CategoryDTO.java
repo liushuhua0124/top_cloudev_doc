@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * Category(文档分类) 的DTO数据传输对象
- * TODO 可根据搜索时的实际需要调整字段，删除不适合用作搜索的字段
  * Created by Mac.Manon on 2018/04/04
  */
 
