@@ -543,6 +543,145 @@ public class CategoryControllerTest {
                 .andReturn();
 
 
+        // 用例9:sequence采用合法边界值Min：sequence=1；
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("用例9文档分类");
+        category.setSequence(1);
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
+
+        // 用例10:sequence采用合法边界值Min+：sequence=2；
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("用例10文档分类");
+        category.setSequence(2);
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
+
+        // 用例11:sequence采用合法边界值Max：sequence=Integer.MAX_VALUE；
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("用例11文档分类");
+        category.setSequence(Integer.MAX_VALUE);
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
+
+        // 用例12:sequence采用合法边界值Max-：sequence=Integer.MAX_VALUE-1；
+        /**---------------------测试用例赋值开始---------------------**/
+        category.setName("用例12文档分类");
+        category.setSequence(Integer.MAX_VALUE-1);
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/create")
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"category"
+                .andExpect(content().string(containsString("category")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.category.categoryId").value(id))
+                .andExpect(jsonPath("$.category.projectId").value(category.getProjectId()))
+                .andExpect(jsonPath("$.category.name").value(category.getName()))
+                .andExpect(jsonPath("$.category.sequence").value(category.getSequence()))
+                .andExpect(jsonPath("$.category.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.category.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.category.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.category.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.category.isDeleted").value(false))
+                .andExpect(jsonPath("$.category.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.category.deleterUserId").value(0))
+                .andReturn();
+
 
 
 
