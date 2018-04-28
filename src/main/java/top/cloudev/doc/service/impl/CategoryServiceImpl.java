@@ -81,10 +81,10 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<Category> getPageData(CategoryDTO dto, Pageable pageable){
         if(dto.getKeyword() != null) {
             String keyword = dto.getKeyword().trim();
-            return categoryRepository.findByNameContainingAndIsDeletedFalseAllIgnoringCase(keyword, pageable);
+            return categoryRepository.findByNameContainingAllIgnoringCaseAndProjectIdAndIsDeletedFalse(keyword, dto.getProjectId(), pageable);
         }
 
-        return categoryRepository.findByIsDeletedFalse(pageable);
+        return categoryRepository.findByProjectIdAndIsDeletedFalse(dto.getProjectId(), pageable);
     }
 
     /**
