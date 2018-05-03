@@ -71,16 +71,15 @@ public class DocumentControllerTest {
 
     // 使用JUnit的@Before注解可在测试开始前进行一些初始化的工作
     @Before
-    public void setUp() throws JsonProcessingException {
+        public void setUp() throws JsonProcessingException {
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 参考实际业务中新增数据所提供的参数，基于"最少字段和数据正确的原则"，将下面的null值换为测试参数
         d1 = new Document();
-        d1.setCategoryId(null);
-        d1.setName(null);
-        d1.setDocType(null);
-        d1.setUrl(null);
-        d1.setMemo(null);
-        d1.setAccessory(null);
+        d1.setCategoryId(1L);
+        d1.setName("Java基础");
+        d1.setDocType((short)1);
+        d1.setUrl("http://www.baidu.com");
+        d1.setMemo("帮助学习者快速入门");
+        d1.setAccessory("售价20元");
         d1.setCreatorUserId(1);
         documentRepository.save(d1);
         /**---------------------测试用例赋值结束---------------------**/
