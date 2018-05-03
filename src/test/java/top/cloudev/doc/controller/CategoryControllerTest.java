@@ -27,7 +27,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Date;
 import java.util.Locale;
-
 import static top.cloudev.doc.DocApplicationTests.Obj2Json;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -65,6 +64,8 @@ public class CategoryControllerTest {
     // 期望获得的结果数量
     private Long expectResultCount;
 
+    Long id = 0L;
+
     // 使用JUnit的@Before注解可在测试开始前进行一些初始化的工作
     @Before
     public void setUp() throws JsonProcessingException {
@@ -76,7 +77,7 @@ public class CategoryControllerTest {
         c1.setCreatorUserId(1);
         categoryRepository.save(c1);
         /**---------------------测试用例赋值结束---------------------**/
-
+        id = c1.getCategoryId();
         // 获取mockMvc对象实例
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -84,7 +85,6 @@ public class CategoryControllerTest {
 
     /**
      * 测试列表
-     *
      * @throws Exception
      */
     @Test
@@ -153,19 +153,18 @@ public class CategoryControllerTest {
          */
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
-        Pageable pageable = new PageRequest(0, 10, Sort.Direction.ASC, "sequence");
+        Pageable pageable=new PageRequest(0,10, Sort.Direction.ASC,"sequence");
         // 期望获得的结果数量(默认有两个测试用例，所以值应为"2L"，如果新增了更多测试用例，请相应设定这个值)
         expectResultCount = 4L;
         /**---------------------测试用例赋值结束---------------------**/
 
         // 直接通过dao层接口方法获得期望的数据
         Page<Category> pagedata = categoryRepository.findByProjectIdAndIsDeletedFalse(c1.getProjectId(), pageable);
-        expectData = JsonPath.read(Obj2Json(pagedata), "$").toString();
+        expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
 
         MvcResult mvcResult = mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get("/category/list?projectId=1")
+                        MockMvcRequestBuilders.get("/category/list?projectId="+c1.getProjectId())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 // 打印结果
@@ -179,12 +178,14 @@ public class CategoryControllerTest {
                 .andReturn();
 
         // 提取返回结果中的列表数据及翻页信息
-        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.pagedata").toString();
+        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(),"$.pagedata").toString();
 
         System.out.println("=============无搜索列表期望结果：" + expectData);
         System.out.println("=============无搜索列表实际返回：" + responseData);
 
-        Assert.assertEquals("错误，无搜索列表返回数据与期望结果有差异", expectData, responseData);
+        Assert.assertEquals("错误，无搜索列表返回数据与期望结果有差异",expectData,responseData);
+
+
 
 
         /**
@@ -192,12 +193,11 @@ public class CategoryControllerTest {
          */
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
         dto = new CategoryDTO();
         dto.setKeyword("文档分类");
-        dto.setProjectId(c1.getProjectId());
+        dto.setProjectId(1L);
 
-        pageable = new PageRequest(0, 10, Sort.Direction.ASC, "sequence");
+        pageable=new PageRequest(0,10, Sort.Direction.ASC,"sequence");
 
         // 期望获得的结果数量
         expectResultCount = 3L;
@@ -206,13 +206,13 @@ public class CategoryControllerTest {
         String keyword = dto.getKeyword().trim();
 
         // 直接通过dao层接口方法获得期望的数据
-        pagedata = categoryRepository.findByNameContainingAllIgnoringCaseAndProjectIdAndIsDeletedFalse(keyword, c1.getProjectId(), pageable);
-        expectData = JsonPath.read(Obj2Json(pagedata), "$").toString();
+        pagedata = categoryRepository.findByNameContainingAllIgnoringCaseAndProjectIdAndIsDeletedFalse(keyword, dto.getProjectId(), pageable);
+        expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
 
         mvcResult = mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get("/category/list?projectId=1")
-                                .param("keyword", dto.getKeyword())
+                        MockMvcRequestBuilders.get("/category/list?projectId="+dto.getProjectId())
+                                .param("keyword",dto.getKeyword())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 // 打印结果
@@ -226,12 +226,14 @@ public class CategoryControllerTest {
                 .andReturn();
 
         // 提取返回结果中的列表数据及翻页信息
-        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.pagedata").toString();
+        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(),"$.pagedata").toString();
 
         System.out.println("=============标准查询期望结果：" + expectData);
         System.out.println("=============标准查询实际返回：" + responseData);
 
-        Assert.assertEquals("错误，标准查询返回数据与期望结果有差异", expectData, responseData);
+        Assert.assertEquals("错误，标准查询返回数据与期望结果有差异",expectData,responseData);
+
+
 
 
     }
@@ -240,7 +242,6 @@ public class CategoryControllerTest {
     /**
      * 测试新增文档分类:Post请求/category/create
      * 测试修改文档分类:Post请求/category/modify
-     *
      * @throws Exception
      */
     @Test
@@ -303,18 +304,18 @@ public class CategoryControllerTest {
         category.setSequence(10);
 
         Long operator = 1L;
-        Long id = 8L;
+        id++;
         /**---------------------测试用例赋值结束---------------------**/
 
         /**-----------------每一个测试用例代码都是由测试用例赋值+模拟请求+测试断言组成**/
         /**---------------------模拟请求-----------------------------**/
         this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
-        )
+                        MockMvcRequestBuilders.post("/category/create")
+                                .param("projectId",category.getProjectId().toString())
+                                .param("name",category.getName())
+                                .param("sequence",category.getSequence().toString())
+                                .param("operator",operator.toString())
+                )
                 /**-------------------测试断言---------------------**/
                 // 打印结果
                 .andDo(print())
@@ -337,6 +338,7 @@ public class CategoryControllerTest {
                 .andReturn();
 
 
+
         // 用例2:name采用合法边界值Min：name="测";
         /**---------------------测试用例赋值开始---------------------**/
         category.setName("测");
@@ -345,10 +347,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -371,6 +373,7 @@ public class CategoryControllerTest {
                 .andReturn();
 
 
+
         // 用例3:name采用合法边界值Min+:name="测试";
         /**---------------------测试用例赋值开始---------------------**/
         category.setName("测试");
@@ -379,10 +382,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -413,10 +416,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -447,10 +450,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -480,10 +483,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -503,10 +506,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -526,10 +529,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -549,10 +552,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -584,10 +587,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -619,10 +622,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -648,16 +651,16 @@ public class CategoryControllerTest {
         // 用例12:sequence采用合法边界值Max-：sequence=Integer.MAX_VALUE-1；
         /**---------------------测试用例赋值开始---------------------**/
         category.setName("用例12文档分类");
-        category.setSequence(Integer.MAX_VALUE - 1);
+        category.setSequence(Integer.MAX_VALUE-1);
         id++;
         /**---------------------测试用例赋值结束---------------------**/
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -687,10 +690,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", "")//int型数据空值参数直接在mock请求中传参
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence","")//int型数据空值参数直接在mock请求中传参
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -711,10 +714,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -735,10 +738,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -754,15 +757,15 @@ public class CategoryControllerTest {
         // 用例16:sequence采用非法边界值Max+：sequence=Integer.MAX_VALUE+1；
         /**---------------------测试用例赋值开始---------------------**/
         category.setName("用例16文档分类");
-        category.setSequence(Integer.MAX_VALUE + 1);
+        category.setSequence(Integer.MAX_VALUE+1);
         /**---------------------测试用例赋值结束---------------------**/
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -782,10 +785,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/create")
-                        .param("projectId", category.getProjectId().toString())
-                        .param("name", category.getName())
-                        .param("sequence", "abc")
-                        .param("operator", operator.toString())
+                        .param("projectId",category.getProjectId().toString())
+                        .param("name",category.getName())
+                        .param("sequence","abc")
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -848,11 +851,11 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/modify")
-                        .param("categoryId", id.toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator2.toString())
-        )
+                        .param("categoryId",id.toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator2.toString())
+                )
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -880,9 +883,9 @@ public class CategoryControllerTest {
         // 修改用例5:name采用合法边界值Max-:name="测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测"，
         // sequence采用合法边界值Max-：sequence=Integer.MAX_VALUE-1;
 
-        String[] names = {"改", "修改", "测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试", "测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测"};
-        int[] sequences = {1, 2, Integer.MAX_VALUE, Integer.MAX_VALUE - 1};
-        for (int i = 0; i < 4; i++) {
+        String[] names = {"改","修改","测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试","测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测"};
+        int[] sequences = {1, 2, Integer.MAX_VALUE, Integer.MAX_VALUE-1};
+        for(int i = 0;i < 4;i++) {
             /**---------------------测试用例赋值开始---------------------**/
             category.setName("改");
             category.setSequence(1);
@@ -920,15 +923,15 @@ public class CategoryControllerTest {
         // sequence采用非法边界值Max+：sequence=Integer.MAX_VALUE+1;
         /**---------------------测试用例赋值开始---------------------**/
         category.setName("测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测试修改文档分类测超长");
-        category.setSequence(Integer.MAX_VALUE + 1);
+        category.setSequence(Integer.MAX_VALUE+1);
         /**---------------------测试用例赋值结束---------------------**/
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/modify")
-                        .param("categoryId", id.toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator2.toString())
+                        .param("categoryId",id.toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator2.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -950,10 +953,10 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/modify")
-                        .param("categoryId", id.toString())
-                        .param("name", category.getName())
-                        .param("sequence", category.getSequence().toString())
-                        .param("operator", operator2.toString())
+                        .param("categoryId",id.toString())
+                        .param("name",category.getName())
+                        .param("sequence",category.getSequence().toString())
+                        .param("operator",operator2.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -966,7 +969,7 @@ public class CategoryControllerTest {
 
         // 修改用例9:sequence采用非法边界值Min-：sequence=0；
         // 修改用例10:sequence采用非法边界值：sequence=-1；
-        for (int i = -1; i <= 0; i++) {
+        for(int i=-1;i<=0;i++) {
             /**---------------------测试用例赋值开始---------------------**/
             category.setSequence(i);
             /**---------------------测试用例赋值结束---------------------**/
@@ -1006,25 +1009,22 @@ public class CategoryControllerTest {
                 // 检查返回的数据节点
                 .andExpect(content().string(containsString("typeMismatch.category.sequence")))
                 .andReturn();
-
-
     }
 
 
     /**
      * 测试查询详情
-     *
      * @throws Exception
      */
     @Test
-    public void testView() throws Exception {
-        //TODO 下面id的值由testView方法执行时总共由testList、testSave和testView方法执行几次插入数据表决定当前的主键ID值
-        Long id = 5L;
+    public void testView() throws Exception
+    {
 
+        System.out.println("======================"+id+"=====================");
         this.mockMvc.perform(
-                MockMvcRequestBuilders.get("/category/view/{id}", id)
-                        .accept(MediaType.APPLICATION_JSON)
-        )
+                        MockMvcRequestBuilders.get("/category/view/{id}",id)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -1049,19 +1049,17 @@ public class CategoryControllerTest {
 
     /**
      * 测试删除
-     *
      * @throws Exception
      */
     @Test
-    public void testDelete() throws Exception {
-        //TODO 下面id的值由testView方法执行时总共由testList、testSave、testView和testDelete方法执行几次插入数据表决定当前的主键ID值
-        Long id = 6L;
+    public void testDelete() throws Exception
+    {
 
         this.mockMvc.perform(
-                MockMvcRequestBuilders.get("/category/delete/{id}", id)
-                        .param("operator", "2")
-                        .accept(MediaType.APPLICATION_JSON)
-        )
+                        MockMvcRequestBuilders.get("/category/delete/{id}",id)
+                                .param("operator","2")
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -1073,7 +1071,7 @@ public class CategoryControllerTest {
         // 验证数据库是否已经删除
         Category category = categoryRepository.findOne(id);
         Assert.assertNotNull(category);
-        Assert.assertEquals("错误，正确结果应该是true", true, category.getIsDeleted());
+        Assert.assertEquals("错误，正确结果应该是true",true,category.getIsDeleted());
     }
 
 }
