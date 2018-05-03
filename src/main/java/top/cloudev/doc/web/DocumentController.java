@@ -98,7 +98,7 @@ public class DocumentController {
      * @return
      */
     @GetMapping("/list")
-    public Map<String, Object> list(@PageableDefault(sort = { "documentId" }, direction = Sort.Direction.DESC) Pageable pageable, DocumentDTO dto){
+    public Map<String, Object> list(@PageableDefault(sort = { "documentId" }, direction = Sort.Direction.ASC) Pageable pageable, DocumentDTO dto){
         Map<String, Object> map = Maps.newHashMap();
 
         Page<Document> pagedata = documentService.getPageData(dto,pageable);
@@ -108,7 +108,7 @@ public class DocumentController {
         return map;
     }
 
-    /**
+    /**d
      * 删除文档
      * GET: /document/delete/9?operator=1
      * @param document

@@ -64,7 +64,7 @@ public class CategoryControllerTest {
     // 期望获得的结果数量
     private Long expectResultCount;
 
-    //提取共性的id
+    //提取共性的id,用于修改和删除
     Long id = 0L;
 
     // 使用JUnit的@Before注解可在测试开始前进行一些初始化的工作

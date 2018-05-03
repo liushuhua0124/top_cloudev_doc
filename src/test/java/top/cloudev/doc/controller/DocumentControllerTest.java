@@ -16,10 +16,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -32,6 +34,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Date;
 import java.util.Locale;
+
 import static top.cloudev.doc.DocApplicationTests.Obj2Json;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -71,15 +74,15 @@ public class DocumentControllerTest {
 
     // 使用JUnit的@Before注解可在测试开始前进行一些初始化的工作
     @Before
-        public void setUp() throws JsonProcessingException {
+    public void setUp() throws JsonProcessingException {
         /**---------------------测试用例赋值开始---------------------**/
         d1 = new Document();
         d1.setCategoryId(1L);
-        d1.setName("Java基础");
-        d1.setDocType((short)1);
+        d1.setName("百度");
+        d1.setDocType((short)2);
         d1.setUrl("http://www.baidu.com");
-        d1.setMemo("帮助学习者快速入门");
-        d1.setAccessory("售价20元");
+        d1.setMemo("中国最大的搜索网站");
+        d1.setAccessory("能搜索出一切想要的东西");
         d1.setCreatorUserId(1);
         documentRepository.save(d1);
         /**---------------------测试用例赋值结束---------------------**/
@@ -91,25 +94,25 @@ public class DocumentControllerTest {
 
     /**
      * 测试列表
+     *
      * @throws Exception
      */
     @Test
     public void testList() throws Exception {
 
-        //TODO 建议借鉴下面的测试用例赋值模版构造更多数据以充分测试"无搜索列表"、"标准查询"和"高级查询"的表现
-
         //提示：构建"新增数据"提示：根据新增数据时客户端实际能提供的参数，依据"最少字段和数据正确的原则"构建
         //提示：构建"修改过的数据"提示：根据修改数据时客户端实际能提供的参数构建
         //提示：可以构建"非物理删除的数据"
+
+        //添加数据:用例二(数据名称跟装配数据中的名称有部分关键字相同)
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
         Document d2 = new Document();
-        d2.setCategoryId(null);
-        d2.setName(null);
-        d2.setDocType(null);
-        d2.setUrl(null);
-        d2.setMemo(null);
-        d2.setAccessory(null);
+        d2.setCategoryId(1L);
+        d2.setName("菜鸟教程百度");
+        d2.setDocType((short)2);
+        d2.setUrl("http://www.runoob.com");
+        d2.setMemo("学习网站");
+        d2.setAccessory("有数据库,前段,后端");
         d2.setCreatorUserId(2);
         //提示：构造"修改过的数据"时需要给"最近修改时间"和"最近修改者"赋值
         //d2.setLastModificationTime(new Date());
@@ -122,24 +125,84 @@ public class DocumentControllerTest {
         /**---------------------测试用例赋值结束---------------------**/
 
 
+        //添加数据:用例三(数据名称与用例1和用例2完全不同)
+        /**---------------------测试用例赋值开始---------------------**/
+        Document d3 = new Document();
+        d3.setCategoryId(1L);
+        d3.setName("CSDN");
+        d3.setDocType((short)2);
+        d3.setUrl("https://www.csdn.net/");
+        d3.setMemo("交流网站");
+        d3.setAccessory("一群朋友讨论技术");
+        d3.setCreatorUserId(2);
+        documentRepository.save(d3);
+        /**---------------------测试用例赋值结束---------------------**/
+
+
+        //添加数据:用例四(数据名称跟用例一一样)
+        /**---------------------测试用例赋值开始---------------------**/
+        Document d4 = new Document();
+        d4.setCategoryId(2L);
+        d4.setName("百度");
+        d4.setDocType((short)2);
+        d4.setUrl("https://www.baidu.com");
+        d4.setMemo("中国最大的搜索网站");
+        d4.setAccessory("能搜索出一切想要的东西");
+        d4.setCreatorUserId(2);
+        documentRepository.save(d4);
+        /**---------------------测试用例赋值结束---------------------**/
+
+
+        //修改数据:用例五
+        /**---------------------测试用例赋值开始---------------------**/
+        Document d5 = new Document();
+        d5.setCategoryId(1L);
+        d5.setName("被修改过的百度");
+        d5.setDocType((short)2);
+        d5.setUrl("https://www.baidu.com1");
+        d5.setMemo("中国最大的搜索网站1");
+        d5.setAccessory("能搜索出一切想要的东西1");
+        d5.setLastModificationTime(new Date());
+        d5.setLastModifierUserId(1);
+        d5.setCreatorUserId(2);
+        documentRepository.save(d5);
+        /**---------------------测试用例赋值结束---------------------**/
+
+
+        //删除数据:用例六
+        /**---------------------测试用例赋值开始---------------------**/
+        Document d6 = new Document();
+        d6.setCategoryId(1L);
+        d6.setName("被修改过的百度");
+        d6.setDocType((short)2);
+        d6.setUrl("https://www.baidu.com1");
+        d6.setMemo("中国最大的搜索网站1");
+        d6.setAccessory("能搜索出一切想要的东西1");
+        d6.setLastModificationTime(new Date());
+        d6.setLastModifierUserId(1);
+        d6.setCreatorUserId(2);
+        d6.setIsDeleted(true);
+        d6.setDeletionTime(new Date());
+        d6.setDeleterUserId(1);
+        documentRepository.save(d6);
+
         /**
          * 测试无搜索列表
          */
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
-        Pageable pageable=new PageRequest(0,10, Sort.Direction.DESC,"documentId");
+        Pageable pageable = new PageRequest(0, 10, Sort.Direction.ASC, "documentId");
         // 期望获得的结果数量(默认有两个测试用例，所以值应为"2L"，如果新增了更多测试用例，请相应设定这个值)
-        expectResultCount = null;
+        expectResultCount = 5L;
         /**---------------------测试用例赋值结束---------------------**/
 
         // 直接通过dao层接口方法获得期望的数据
         Page<Document> pagedata = documentRepository.findByIsDeletedFalse(pageable);
-        expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
+        expectData = JsonPath.read(Obj2Json(pagedata), "$").toString();
 
         MvcResult mvcResult = mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get("/document/list")
+                        MockMvcRequestBuilders.get("/document/list/")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 // 打印结果
@@ -156,14 +219,12 @@ public class DocumentControllerTest {
                 .andReturn();
 
         // 提取返回结果中的列表数据及翻页信息
-        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(),"$.pagedata").toString();
+        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.pagedata").toString();
 
         System.out.println("=============无搜索列表期望结果：" + expectData);
         System.out.println("=============无搜索列表实际返回：" + responseData);
 
-        Assert.assertEquals("错误，无搜索列表返回数据与期望结果有差异",expectData,responseData);
-
-
+        Assert.assertEquals("错误，无搜索列表返回数据与期望结果有差异", expectData, responseData);
 
 
         /**
@@ -171,40 +232,38 @@ public class DocumentControllerTest {
          */
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
         dto = new DocumentDTO();
-        dto.setKeyword(null);
+        //通过页面传入的keyword进行查询
+        dto.setKeyword("百度");
 
-        pageable=new PageRequest(0,10, Sort.Direction.DESC,"documentId");
+        pageable = new PageRequest(0, 10, Sort.Direction.ASC, "documentId");
 
         // 期望获得的结果数量
-        expectResultCount = null;
+        expectResultCount = 4L;
         /**---------------------测试用例赋值结束---------------------**/
 
         String keyword = dto.getKeyword().trim();
 
         // 直接通过dao层接口方法获得期望的数据
-        Specification<Document> specification=new Specification<Document>() {
+        Specification<Document> specification = new Specification<Document>() {
             @Override
-            public Predicate toPredicate(Root<Document> root,
-                                         CriteriaQuery<?> query, CriteriaBuilder cb) {
-                Predicate name=cb.like(cb.upper(root.get("name")), "%" + keyword.toUpperCase() + "%");
-                Predicate url=cb.like(cb.upper(root.get("url")), "%" + keyword.toUpperCase() + "%");
-                Predicate memo=cb.like(cb.upper(root.get("memo")), "%" + keyword.toUpperCase() + "%");
-                Predicate accessory=cb.like(cb.upper(root.get("accessory")), "%" + keyword.toUpperCase() + "%");
-                Predicate isDeleted=cb.equal(root.get("isDeleted").as(Boolean.class), false);
-                Predicate p = cb.and(isDeleted,cb.or(name, url, memo, accessory));
-
-                    return p;
-                }
-            };
-        pagedata = documentRepository.findAll(specification,pageable);
-        expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
+            public Predicate toPredicate(Root<Document> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate name = cb.like(cb.upper(root.get("name")), "%" + keyword.toUpperCase() + "%");
+                Predicate url = cb.like(cb.upper(root.get("url")), "%" + keyword.toUpperCase() + "%");
+                Predicate memo = cb.like(cb.upper(root.get("memo")), "%" + keyword.toUpperCase() + "%");
+                Predicate accessory = cb.like(cb.upper(root.get("accessory")), "%" + keyword.toUpperCase() + "%");
+                Predicate isDeleted = cb.equal(root.get("isDeleted").as(Boolean.class), false);
+                Predicate p = cb.and(isDeleted, cb.or(name, url, memo, accessory));
+                return p;
+            }
+        };
+        pagedata = documentRepository.findAll(specification, pageable);
+        expectData = JsonPath.read(Obj2Json(pagedata), "$").toString();
 
         mvcResult = mockMvc
                 .perform(
                         MockMvcRequestBuilders.get("/document/list")
-                                .param("keyword",dto.getKeyword())
+                                .param("keyword", dto.getKeyword())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 // 打印结果
@@ -221,14 +280,12 @@ public class DocumentControllerTest {
                 .andReturn();
 
         // 提取返回结果中的列表数据及翻页信息
-        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(),"$.pagedata").toString();
+        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.pagedata").toString();
 
         System.out.println("=============标准查询期望结果：" + expectData);
         System.out.println("=============标准查询实际返回：" + responseData);
 
-        Assert.assertEquals("错误，标准查询返回数据与期望结果有差异",expectData,responseData);
-
-
+        Assert.assertEquals("错误，标准查询返回数据与期望结果有差异", expectData, responseData);
 
 
         /**
@@ -236,29 +293,29 @@ public class DocumentControllerTest {
          */
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
+        //通过四个字段进行查询
         dto = new DocumentDTO();
-        dto.setName(null);
-        dto.setUrl(null);
-        dto.setMemo(null);
-        dto.setAccessory(null);
+        dto.setName("CSDN");
+        dto.setUrl("https://www.csdn.net/");
+        dto.setMemo("交流网站");
+        dto.setAccessory("一群朋友讨论技术");
 
-        pageable=new PageRequest(0,10, Sort.Direction.DESC,"documentId");
+        pageable = new PageRequest(0, 10, Sort.Direction.ASC, "documentId");
 
         // 期望获得的结果数量
-        expectResultCount = null;
+        expectResultCount = 1L;
         /**---------------------测试用例赋值结束---------------------**/
 
         // 直接通过dao层接口方法获得期望的数据
         pagedata = documentRepository.findByNameContainingAndUrlContainingAndMemoContainingAndAccessoryContainingAndIsDeletedFalseAllIgnoringCase(dto.getName().trim(), dto.getUrl().trim(), dto.getMemo().trim(), dto.getAccessory().trim(), pageable);
-        expectData = JsonPath.read(Obj2Json(pagedata),"$").toString();
+        expectData = JsonPath.read(Obj2Json(pagedata), "$").toString();
         mvcResult = mockMvc
                 .perform(
                         MockMvcRequestBuilders.get("/document/list")
-                                .param("name",dto.getName())
-                                .param("url",dto.getUrl())
-                                .param("memo",dto.getMemo())
-                                .param("accessory",dto.getAccessory())
+                                .param("name", dto.getName())
+                                .param("url", dto.getUrl())
+                                .param("memo", dto.getMemo())
+                                .param("accessory", dto.getAccessory())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 // 打印结果
@@ -275,12 +332,12 @@ public class DocumentControllerTest {
                 .andReturn();
 
         // 提取返回结果中的列表数据及翻页信息
-        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(),"$.pagedata").toString();
+        responseData = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.pagedata").toString();
 
         System.out.println("=============高级查询期望结果：" + expectData);
         System.out.println("=============高级查询实际返回：" + responseData);
 
-        Assert.assertEquals("错误，高级查询返回数据与期望结果有差异",expectData,responseData);
+        Assert.assertEquals("错误，高级查询返回数据与期望结果有差异", expectData, responseData);
 
     }
 
@@ -288,6 +345,7 @@ public class DocumentControllerTest {
     /**
      * 测试新增文档:Post请求/document/create
      * 测试修改文档:Post请求/document/modify
+     *
      * @throws Exception
      */
     @Test
@@ -296,7 +354,7 @@ public class DocumentControllerTest {
          * 测试新增文档
          */
 
-         //TODO 列出新增文档测试用例清单
+        //TODO 列出新增文档测试用例清单
 
         /**---------------------测试用例赋值开始---------------------**/
         //TODO 将下面的null值换为测试参数
@@ -313,15 +371,15 @@ public class DocumentControllerTest {
         /**---------------------测试用例赋值结束---------------------**/
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/document/create")
-                                .param("categoryId",document.getCategoryId().toString())
-                                .param("name",document.getName())
-                                .param("docType",document.getDocType().toString())
-                                .param("url",document.getUrl())
-                                .param("memo",document.getMemo())
-                                .param("accessory",document.getAccessory())
-                                .param("operator",operator.toString())
-                )
+                MockMvcRequestBuilders.post("/document/create")
+                        .param("categoryId", document.getCategoryId().toString())
+                        .param("name", document.getName())
+                        .param("docType", document.getDocType().toString())
+                        .param("url", document.getUrl())
+                        .param("memo", document.getMemo())
+                        .param("accessory", document.getAccessory())
+                        .param("operator", operator.toString())
+        )
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -350,7 +408,7 @@ public class DocumentControllerTest {
          * 测试修改文档
          */
 
-         //TODO 列出修改文档测试用例清单
+        //TODO 列出修改文档测试用例清单
 
         /**---------------------测试用例赋值开始---------------------**/
         //TODO 将下面的null值换为测试参数
@@ -368,15 +426,15 @@ public class DocumentControllerTest {
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/document/modify")
-                        .param("documentId",id.toString())
-                        .param("categoryId",document.getCategoryId().toString())
-                        .param("name",document.getName())
-                        .param("docType",document.getDocType().toString())
-                        .param("url",document.getUrl())
-                        .param("memo",document.getMemo())
-                        .param("accessory",document.getAccessory())
-                        .param("operator",operator2.toString())
-                )
+                        .param("documentId", id.toString())
+                        .param("categoryId", document.getCategoryId().toString())
+                        .param("name", document.getName())
+                        .param("docType", document.getDocType().toString())
+                        .param("url", document.getUrl())
+                        .param("memo", document.getMemo())
+                        .param("accessory", document.getAccessory())
+                        .param("operator", operator2.toString())
+        )
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -404,18 +462,18 @@ public class DocumentControllerTest {
 
     /**
      * 测试查询详情
+     *
      * @throws Exception
      */
     @Test
-    public void testView() throws Exception
-    {
+    public void testView() throws Exception {
         //TODO 下面id的值由testView方法执行时总共由testList、testSave和testView方法执行几次插入数据表决定当前的主键ID值
         Long id = 5L;
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/document/view/{id}",id)
-                                .accept(MediaType.APPLICATION_JSON)
-                )
+                MockMvcRequestBuilders.get("/document/view/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -443,19 +501,19 @@ public class DocumentControllerTest {
 
     /**
      * 测试删除
+     *
      * @throws Exception
      */
     @Test
-    public void testDelete() throws Exception
-    {
+    public void testDelete() throws Exception {
         //TODO 下面id的值由testView方法执行时总共由testList、testSave、testView和testDelete方法执行几次插入数据表决定当前的主键ID值
         Long id = 6L;
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/document/delete/{id}",id)
-                                .param("operator","2")
-                                .accept(MediaType.APPLICATION_JSON)
-                )
+                MockMvcRequestBuilders.get("/document/delete/{id}", id)
+                        .param("operator", "2")
+                        .accept(MediaType.APPLICATION_JSON)
+        )
                 // 打印结果
                 .andDo(print())
                 // 检查状态码为200
@@ -467,7 +525,7 @@ public class DocumentControllerTest {
         // 验证数据库是否已经删除
         Document document = documentRepository.findOne(id);
         Assert.assertNotNull(document);
-        Assert.assertEquals("错误，正确结果应该是true",true,document.getIsDeleted());
+        Assert.assertEquals("错误，正确结果应该是true", true, document.getIsDeleted());
     }
 
 }
