@@ -5,7 +5,7 @@ package top.cloudev.doc.common;
  * Created by Mac.Manon on 2018/04/04
  */
 public enum ErrorCode {
-    Category_Name_Exists("10001");
+    Category_Name_Exists("10001"), Document_Name_Exists("10002");
 
     private String code;
 

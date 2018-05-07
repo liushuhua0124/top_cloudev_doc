@@ -72,6 +72,8 @@ public class DocumentControllerTest {
     // 期望获得的结果数量
     private Long expectResultCount;
 
+    private Long id = 0L;
+
     // 使用JUnit的@Before注解可在测试开始前进行一些初始化的工作
     @Before
     public void setUp() throws JsonProcessingException {
@@ -85,6 +87,7 @@ public class DocumentControllerTest {
         d1.setAccessory("能搜索出一切想要的东西");
         d1.setCreatorUserId(1);
         documentRepository.save(d1);
+        id = d1.getDocumentId();
         /**---------------------测试用例赋值结束---------------------**/
 
         // 获取mockMvc对象实例
@@ -354,31 +357,52 @@ public class DocumentControllerTest {
          * 测试新增文档
          */
 
-        //TODO 列出新增文档测试用例清单
+        /**
+         *  用例1:全部参数使用合法中间值
+         *
+         *  用例2:name采用合法边界值man="白"
+         *
+         *  用例3:name采用合法边界值man="中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国"
+         *
+         *  用例4:name采用非法等价类：空值；
+         *
+         *  用例5:name采用非法边界值Max+:name="中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度";
+         *
+         *  用例6:name同项目下唯一性逻辑校验：name=“百度”(采用SetUp()中相同的值)；
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         */
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
+        //全部参数使用合法中间值
         Document document = new Document();
-        document.setCategoryId(null);
-        document.setName(null);
-        document.setDocType(null);
-        document.setUrl(null);
-        document.setMemo(null);
-        document.setAccessory(null);
+        document.setCategoryId(1L);
+        document.setDocumentId(2L);
+        document.setName("微信");
+        document.setDocType((short)2);
+        document.setUrl("https://www.baidu");
+        document.setMemo("是一款聊天软件");
+        document.setAccessory("创始人是张小龙");
 
-        Long operator = null;
-        Long id = 4L;
+        Long operator = 1L;
+        id++;
         /**---------------------测试用例赋值结束---------------------**/
 
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/document/create")
-                        .param("categoryId", document.getCategoryId().toString())
-                        .param("name", document.getName())
-                        .param("docType", document.getDocType().toString())
-                        .param("url", document.getUrl())
-                        .param("memo", document.getMemo())
-                        .param("accessory", document.getAccessory())
-                        .param("operator", operator.toString())
+                        .param("categoryId",document.getCategoryId().toString())
+                        .param("name",document.getName())
+                        .param("docType",document.getDocType().toString())
+                        .param("url",document.getUrl())
+                        .param("memo",document.getMemo())
+                        .param("accessory",document.getAccessory())
+                        .param("operator",operator.toString())
         )
                 // 打印结果
                 .andDo(print())
@@ -390,7 +414,7 @@ public class DocumentControllerTest {
                 .andExpect(jsonPath("$.document.documentId").value(id))
                 .andExpect(jsonPath("$.document.categoryId").value(document.getCategoryId()))
                 .andExpect(jsonPath("$.document.name").value(document.getName()))
-                .andExpect(jsonPath("$.document.docType").value(document.getDocType()))
+                .andExpect(jsonPath("$.document.docType").value(document.getDocType().toString()))
                 .andExpect(jsonPath("$.document.url").value(document.getUrl()))
                 .andExpect(jsonPath("$.document.memo").value(document.getMemo()))
                 .andExpect(jsonPath("$.document.accessory").value(document.getAccessory()))
@@ -404,24 +428,196 @@ public class DocumentControllerTest {
                 .andReturn();
 
 
+        //用例2:name采用合法边界值man="白"
+        /**---------------------测试用例赋值开始---------------------**/
+        document.setName("白");
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/document/create")
+                        .param("categoryId",document.getCategoryId().toString())
+                        .param("name",document.getName())
+                        .param("docType",document.getDocType().toString())
+                        .param("url",document.getUrl())
+                        .param("memo",document.getMemo())
+                        .param("accessory",document.getAccessory())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"document"
+                .andExpect(content().string(containsString("document")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.document.documentId").value(id))
+                .andExpect(jsonPath("$.document.categoryId").value(document.getCategoryId()))
+                .andExpect(jsonPath("$.document.name").value(document.getName()))
+                .andExpect(jsonPath("$.document.docType").value(document.getDocType().toString()))
+                .andExpect(jsonPath("$.document.url").value(document.getUrl()))
+                .andExpect(jsonPath("$.document.memo").value(document.getMemo()))
+                .andExpect(jsonPath("$.document.accessory").value(document.getAccessory()))
+                .andExpect(jsonPath("$.document.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.document.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.document.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.document.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.document.isDeleted").value(false))
+                .andExpect(jsonPath("$.document.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.document.deleterUserId").value(0))
+                .andReturn();
+
+
+        //用例3:name采用合法边界值man="中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国"
+        /**---------------------测试用例赋值开始---------------------**/
+        document.setName("中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国百度中国");
+        id++;
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/document/create")
+                        .param("categoryId",document.getCategoryId().toString())
+                        .param("name",document.getName())
+                        .param("docType",document.getDocType().toString())
+                        .param("url",document.getUrl())
+                        .param("memo",document.getMemo())
+                        .param("accessory",document.getAccessory())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"document"
+                .andExpect(content().string(containsString("document")))
+                // 检查返回的数据节点
+                .andExpect(jsonPath("$.document.documentId").value(id))
+                .andExpect(jsonPath("$.document.categoryId").value(document.getCategoryId()))
+                .andExpect(jsonPath("$.document.name").value(document.getName()))
+                .andExpect(jsonPath("$.document.docType").value(document.getDocType().toString()))
+                .andExpect(jsonPath("$.document.url").value(document.getUrl()))
+                .andExpect(jsonPath("$.document.memo").value(document.getMemo()))
+                .andExpect(jsonPath("$.document.accessory").value(document.getAccessory()))
+                .andExpect(jsonPath("$.document.creationTime").isNotEmpty())
+                .andExpect(jsonPath("$.document.creatorUserId").value(operator))
+                .andExpect(jsonPath("$.document.lastModificationTime").isEmpty())
+                .andExpect(jsonPath("$.document.lastModifierUserId").value(0))
+                .andExpect(jsonPath("$.document.isDeleted").value(false))
+                .andExpect(jsonPath("$.document.deletionTime").isEmpty())
+                .andExpect(jsonPath("$.document.deleterUserId").value(0))
+                .andReturn();
+
+
+        //用例4:name采用非法等价类：空值；
+        /**---------------------测试用例赋值开始---------------------**/
+        document.setName("");
+        /**---------------------测试用例赋值结束---------------------**/
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/document/create")
+                        .param("categoryId",document.getCategoryId().toString())
+                        .param("name",document.getName())
+                        .param("docType",document.getDocType().toString())
+                        .param("url",document.getUrl())
+                        .param("memo",document.getMemo())
+                        .param("accessory",document.getAccessory())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"formErrors"
+                .andExpect(content().string(containsString("formErrors")))
+                // 检查返回的数据节点
+                .andExpect(content().string(containsString("\"code\" : \"Length\"")))
+                .andReturn();
+
+
+        //用例5:name采用非法边界值Max+:name="感恩这份刻骨的爱感谢这段刻骨的情它给人带来的不仅仅是幸福偶尔的小心痛也是它的精美礼物因为那是它在替你装点了完美的人生没有心痛的人生怎么能称谓完美的人生而那句痛并快乐着就是最好的诠释携手一生相伴到老幸福在于把一个人记住";
+        /**---------------------测试用例赋值开始---------------------**/
+        document.setName("感恩这份刻骨的爱感谢这段刻骨的情它给人带来的不仅仅是幸福偶尔的小心痛也是它的精美礼物因为那是它在替你装点了完美的人生没有心痛的人生怎么能称谓完美的人生而那句痛并快乐着就是最好的诠释携手一生相伴到老幸福在于把一个人记住");
+        /**---------------------测试用例赋值结束---------------------**/
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/document/create")
+                        .param("categoryId",document.getCategoryId().toString())
+                        .param("name",document.getName())
+                        .param("docType",document.getDocType().toString())
+                        .param("url",document.getUrl())
+                        .param("memo",document.getMemo())
+                        .param("accessory",document.getAccessory())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"formErrors"
+                .andExpect(content().string(containsString("formErrors")))
+                // 检查返回的数据节点
+                .andExpect(content().string(containsString("\"code\" : \"Length\"")))
+                .andReturn();
+
+
+        document.setName("百度");
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.post("/document/create")
+                        .param("categoryId",document.getCategoryId().toString())
+                        .param("name",document.getName())
+                        .param("docType",document.getDocType().toString())
+                        .param("url",document.getUrl())
+                        .param("memo",document.getMemo())
+                        .param("accessory",document.getAccessory())
+                        .param("operator",operator.toString())
+        )
+                // 打印结果
+                .andDo(print())
+                // 检查状态码为200
+                .andExpect(status().isOk())
+                // 检查内容有"errorMessage"
+                .andExpect(content().string(containsString("\"errorMessage\" : \"[10002]")))
+                .andReturn();
+
+
+
+
+
+
         /**
          * 测试修改文档
          */
 
-        //TODO 列出修改文档测试用例清单
+        /**
+         *  修改用例1:全部参数使用合法中间值
+         *
+         *  修改用例2:name采用合法边界值
+         *
+         *  修改用例3:name采用合法边界值
+         *
+         *  修改用例4:name采用合法边界值
+         *
+         *  修改用例5:name采用合法边界值
+         *
+         *  修改用例6:name采用非法等价类：空值，
+         *
+         *  修改用例7:name采用非法边界值
+         *
+         *  修改用例8:name同项目下唯一性逻辑校验
+         *
+         *
+         */
 
         /**---------------------测试用例赋值开始---------------------**/
-        //TODO 将下面的null值换为测试参数
         document = new Document();
         document.setDocumentId(id);
-        document.setCategoryId(null);
-        document.setName(null);
-        document.setDocType(null);
-        document.setUrl(null);
-        document.setMemo(null);
-        document.setAccessory(null);
+        document.setCategoryId(1L);
+        document.setName("111");
+        document.setDocType((short)1);
+        document.setUrl("http://www.asd.com");
+        document.setMemo("aaaaaaaa");
+        document.setAccessory("123456");
 
-        Long operator2 = null;
+        Long operator2 = 1L;
         /**---------------------测试用例赋值结束---------------------**/
 
         this.mockMvc.perform(
@@ -445,7 +641,7 @@ public class DocumentControllerTest {
                 .andExpect(jsonPath("$.document.documentId").value(id))
                 .andExpect(jsonPath("$.document.categoryId").value(document.getCategoryId()))
                 .andExpect(jsonPath("$.document.name").value(document.getName()))
-                .andExpect(jsonPath("$.document.docType").value(document.getDocType()))
+                .andExpect(jsonPath("$.document.docType").value(document.getDocType().toString()))
                 .andExpect(jsonPath("$.document.url").value(document.getUrl()))
                 .andExpect(jsonPath("$.document.memo").value(document.getMemo()))
                 .andExpect(jsonPath("$.document.accessory").value(document.getAccessory()))
@@ -467,9 +663,8 @@ public class DocumentControllerTest {
      */
     @Test
     public void testView() throws Exception {
-        //TODO 下面id的值由testView方法执行时总共由testList、testSave和testView方法执行几次插入数据表决定当前的主键ID值
-        Long id = 5L;
 
+        //定义的全局id,直接用全局id获取
         this.mockMvc.perform(
                 MockMvcRequestBuilders.get("/document/view/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -484,7 +679,7 @@ public class DocumentControllerTest {
                 .andExpect(jsonPath("$.document.documentId").value(id))
                 .andExpect(jsonPath("$.document.categoryId").value(d1.getCategoryId()))
                 .andExpect(jsonPath("$.document.name").value(d1.getName()))
-                .andExpect(jsonPath("$.document.docType").value(d1.getDocType()))
+                .andExpect(jsonPath("$.document.docType").value(d1.getDocType().toString()))
                 .andExpect(jsonPath("$.document.url").value(d1.getUrl()))
                 .andExpect(jsonPath("$.document.memo").value(d1.getMemo()))
                 .andExpect(jsonPath("$.document.accessory").value(d1.getAccessory()))
@@ -506,9 +701,8 @@ public class DocumentControllerTest {
      */
     @Test
     public void testDelete() throws Exception {
-        //TODO 下面id的值由testView方法执行时总共由testList、testSave、testView和testDelete方法执行几次插入数据表决定当前的主键ID值
-        Long id = 6L;
 
+        //定义的全局id,直接用全局id获取
         this.mockMvc.perform(
                 MockMvcRequestBuilders.get("/document/delete/{id}", id)
                         .param("operator", "2")

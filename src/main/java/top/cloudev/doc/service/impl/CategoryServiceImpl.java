@@ -47,6 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
             //判断同一项目里是否有同名的文档分类
             List<Category> list = categoryRepository.findByProjectIdAndNameAndIsDeletedFalse(category.getProjectId(), category.getName());
             if (list.size() > 0) {
+                System.out.println(ErrorCode.Category_Name_Exists.getCode()+"===================================");
                 throw new BusinessException(ErrorCode.Category_Name_Exists);
             }
             category.setCreatorUserId(Long.valueOf(request.getParameter("operator")));

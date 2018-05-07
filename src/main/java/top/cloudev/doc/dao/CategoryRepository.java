@@ -20,5 +20,6 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     // 标准查询
     Page<Category> findByNameContainingAllIgnoringCaseAndProjectIdAndIsDeletedFalse(String name, Long projectId, Pageable pageable);
 
+    //用于判断是否有相同名称的值
     List<Category> findByProjectIdAndNameAndIsDeletedFalse(Long projectId, String name);
 }

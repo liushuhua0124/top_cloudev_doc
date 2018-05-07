@@ -60,7 +60,7 @@ public class Document implements Serializable {
      * 文档访问网址
      */
     @NotBlank(groups={CheckCreate.class, CheckModify.class})
-    @Pattern(regexp = "(http:)|(https:)//([\\w-]+\\.)+[\\w-]+(/[\\w-\\./?%=]*)?", groups={CheckCreate.class, CheckModify.class})
+    @URL(groups={CheckCreate.class, CheckModify.class})
     @Column(nullable = false, name = "url", length = 255)
     private String url = "";
 
@@ -123,23 +123,6 @@ public class Document implements Serializable {
      */
     @Column(name = "deleter_user_id")
     private long deleterUserId;
-
-    /**
-     *TODO 请将数据表的名称及字段名称加入到国际化语言包中:
-     TableName.document=\u6587\u6863
-     FieldName.document.documentId=\u6587\u6863ID
-     FieldName.document.categoryId=\u6587\u6863\u6240\u5c5e\u5206\u7c7b
-     FieldName.document.name=\u6587\u6863\u540d\u79f0
-     FieldName.document.docType=\u6587\u6863\u7c7b\u578b
-     FieldName.document.url=\u6587\u6863\u8bbf\u95ee\u7f51\u5740
-     FieldName.document.memo=\u6587\u6863\u63cf\u8ff0
-     FieldName.document.accessory=\u9644\u4ef6
-     *
-     *
-     *Tip:
-     *如果后续加入引用类型字段，可考虑使用@Valid注解；
-     *如果后续加入Collection、Map和数组类型字段，可考虑使用@Size(max, min)注解；
-     */
 
     /**
      *空构造函数
